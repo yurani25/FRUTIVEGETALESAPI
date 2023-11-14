@@ -24,7 +24,7 @@ use App\Http\Controllers\usersController;
 */
 
 Route::get('/', function () {
-    return view('Auth.login');
+    return view('auth.login');
 });
 
 
