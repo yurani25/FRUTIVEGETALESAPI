@@ -19,6 +19,7 @@ class user extends Authenticatable
         'telefono',
         'email',
         'password',
+        'profile_picture',
         'rol_id', 
         'abastecimiento_id'
         

@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
           // $table->unsignedBigInteger('rol_id');
            // $table->unsignedBigInteger('abastecimiento_id');
+            $table->string('profile_picture')->nullable();
             $table->string('nombres');
             $table->string('apellidos');
             $table->integer('edad');

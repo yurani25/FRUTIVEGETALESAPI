@@ -21,6 +21,7 @@
                 <th>ID</th>
                <!-- <th>Rol</th>
                 <th>Abastecimiento ID</th> -->
+                <th>imagen</th>
                 <th>Nombres</th>
                 <th>Apellidos</th>
                 <th>Edad</th>
@@ -36,7 +37,9 @@
                 <td>{{$user->id}}</td>
               <!--  <td>{{$user->rol_id}}</td>
                 <td>{{$user->abastecimiento_id}}</td> -->
+                <td>{{$user->profile_picture}}</td>
                 <td>{{$user->nombres}}</td>
+               
                 <td>{{$user->apellidos}}</td>
                 <td>{{$user->edad}}</td>
                 <td>{{$user->telefono}}</td>

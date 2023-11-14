@@ -109,7 +109,7 @@
                     <a class="nav-link dropdown-toggle profile-icon" href="#" id="profileDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                     style="color: black; /* o el color que desees */">
-                    <img src="{{ asset('img/iconoperfil.png') }}" alt="Icono de perfil" style="width: 32px; height: auto;">
+                    <img src="{{ asset('img/default_profile_picture.png') }}" alt="Icono de perfil" style="width: 32px; height: auto;">
                     {{ Auth::user()->nombres }}
                 </a>
                 

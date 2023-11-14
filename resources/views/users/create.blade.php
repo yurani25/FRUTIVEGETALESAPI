@@ -56,7 +56,7 @@ function validateForm() {
 <body>
     <h1>Registrarse</h1>
     <div class="users-form-uno">
-        <form name="myForm" action="{{ route('users.store') }}" method="post" onsubmit="return validateForm();">
+        <form name="myForm" action="{{ route('users.store') }}" method="post" enctype="multipart/form-data" onsubmit="return validateForm();">
             @csrf
             <input type="text" name="nombres" placeholder="Nombres">
             <div id="nombresError" class="error"></div>

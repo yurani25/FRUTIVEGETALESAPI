@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\abastecimiento;
 use App\Models\rol;
 use App\Models\user;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\User as AuthUser;
 
 class usersController extends Controller
 {
@@ -51,8 +53,17 @@ class usersController extends Controller
         $users->password = bcrypt($request->password); // Encripta la contraseña
        // $users->abastecimiento_id = $request->abastecimiento_id;
         //$users->rol_id = $request->rol_id;
-        $users->save();
-        return redirect()->route('login', $users);
+
+// Asignar una foto predeterminada
+$users->profile_picture = 'img/default_profile_picture.png';
+
+// Procesar y guardar la foto de perfil si se proporciona una
+if ($request->hasFile('profile_picture')) {
+    $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+    $users->profile_picture = $path;
+}
+$users->save();
+  return redirect()->route('login', $users);
     }
     
 
@@ -90,20 +101,36 @@ class usersController extends Controller
      */
     public function update(Request $request, user $user)
     {
-        $user->nombres=$request->nombres;
-        $user->apellidos=$request->apellidos;
-        $user->edad=$request->edad;
-        $user->telefono=$request->telefono;
-        $user->email=$request->email;
-        $user->password =$request->password;
-       // $user->abastecimiento_id=$request->abastecimiento_id;
-        //$user->rol_id=$request->rol_id;
+        $user->nombres = $request->nombres;
+        $user->apellidos = $request->apellidos;
+        $user->edad = $request->edad;
+        $user->telefono = $request->telefono;
+        $user->email = $request->email;
+        $user->password = $request->password;
+    
+        // Actualizar la foto de perfil si se proporciona una nueva
+        if ($request->hasFile('profile_picture')) {
+            // Eliminar la foto de perfil anterior si no es la predeterminada
+            if ($user->profile_picture && $user->profile_picture !== 'img/default_profile_picture.png') {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+            // Guardar la nueva foto de perfil
+            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
+            $user->profile_picture = $path;
+        } elseif ($request->has('remove_profile_picture') && $request->remove_profile_picture == 1) {
+            // Si se proporciona un campo remove_profile_picture y es igual a 1, elimina la foto de perfil
+            if ($user->profile_picture && $user->profile_picture !== 'img/default_profile_picture.png') {
+                Storage::disk('public')->delete($user->profile_picture);
+                $user->profile_picture = null;
+            }
+        }
+    
         $user->save();
     
-        return redirect()->route('users.index')->with('success', 'Registro actualizado correctamente');
+        return redirect()->route('users.edit', ['user' => $user->id])->with('success', 'Registro actualizado correctamente');
 
     }
-    
+     
 
     /**
      * Remove the specified resource from storage.
@@ -117,4 +144,13 @@ class usersController extends Controller
 
         return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente');
     }
+
+    public function dataUser()
+{
+
+$user= user::all();
+return response()->json($user);
+
+}
+
 }
