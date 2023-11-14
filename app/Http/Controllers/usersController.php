@@ -77,7 +77,7 @@ class usersController extends Controller
     {
 
         $rols = Rol::all(); 
-        $abastecimientos = Abastecimiento::all(); 
+       $abastecimientos = Abastecimiento::all(); 
         return view('users.edit', compact('user', 'rols','abastecimientos'));
     }
 

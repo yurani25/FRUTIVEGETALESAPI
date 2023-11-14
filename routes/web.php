@@ -147,8 +147,6 @@ Route::put('pqrs/{pqr}', [pqrsController::class, 'update'])->name('pqrs.update')
 Route::delete('pqrs/{pqr}',[pqrsController::class, 'destroy'])->name('pqrs.destroy');
 
 
-
-
 //carrito de compras
 Route::get('cars/create', [carrito_comprasController::class, 'create'])->name('cars.create');
 Route::post('cars', [carrito_comprasController::class, 'store'])->name('cars.store');
@@ -159,13 +157,6 @@ Route::get('cars/{car}/edit', [carrito_comprasController::class, 'edit'])->name(
 Route::put('cars/{car}', [carrito_comprasController::class, 'update'])->name('cars.update');
 //eliminar
 Route::delete('cars/{car}',[carrito_comprasController::class, 'destroy'])->name('cars.destroy');
-
-
-
-
-
-
-
 
 //rutas para la interfas de la aplicacion
 
@@ -216,6 +207,14 @@ Route::get('terminos', function () {
 Route::get('datospersonales', function () {
     return view('datospersonales');
 })->name('datospersonales');
+
+Route::get('nosotros', function () {
+    return view('nosotros');
+})->name('nosotros');
+ 
+Route::get('ayuda', function () {
+    return view('ayuda');
+})->name('ayuda');
 
 Auth::routes();
 

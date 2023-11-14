@@ -78,8 +78,16 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ route('contact') }}">Contactenos</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{route('pqrs.create')}}">PQRS</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="pqrsDropdown" role="button" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                        PQRS
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="pqrsDropdown">
+                        <a class="dropdown-item" href="{{route('pqrs.create')}}">Crear PQRS</a>
+                        <div class="dropdown-divider"></div> <!-- Separador -->
+                        <a class="dropdown-item" href="#">Servicio de Ayuda</a>
+                    </div>
                 </li>
             </ul>
             
@@ -90,19 +98,41 @@
 
 <br>
 <body>
-    <div class="container-tres content-container">
-        <div class="card">
-            <h1>{{ $producto->nombres }}</h1>
-            <img class="product-image" src="{{ asset('storage/productos/' . $producto->imagen) }}" alt="{{ $producto->nombres }}">
-            <p class="product-price">Precio: ${{ $producto->precio }}</p>
-            <p class="product-description">{{ $producto->descripcion }}</p>
+ 
+<!-- Detalles del producto -->
+<div class="container-tres content-container">
+    <div class="card">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Aumenta el tamaño de la imagen y agrega estilos adicionales -->
+                <img class="product-image" src="{{ asset('storage/productos/' . $producto->imagen) }}" alt="{{ $producto->nombres }}" style="max-width: 100%; height: auto; object-fit: cover;">
+            </div>
+            <div class="col-md-6">
+                <h1>{{ $producto->nombres }}</h1>
 
-            <a href="{{ route('index') }}" class="btn btn-primary-dos">Añadir a carrito</a>
-        </div>   
-                </div>
+                 <!-- Ajusta el estilo de la descripción -->
+                 <p class="product-description" style="white-space: pre-line; overflow: hidden; text-overflow: ellipsis; max-height: 100%;">{{ $producto->descripcion }}</p>
+            
+                <p class="product-price">Precio: ${{ $producto->precio }}</p>
+                
+               
+
+         <!-- Agrega más detalles según tus necesidades -->
+         <h5> categoria : inorganico </h5>
+
+                <!-- Agrega un formulario para agregar al carrito -->
+                <form action="" method="post">
+                    @csrf
+                    <button type="submit" class="btn btn-primary-dos">Añadir al carrito</button>
+                </form>
             </div>
         </div>
     </div>
+</div>
+
+
+
+
 
 
     

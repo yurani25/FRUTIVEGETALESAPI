@@ -50,7 +50,7 @@
         </div>
     </div>
     
-    <nav class="navbar navbar-expand-lg navbar-light bg-success-light ">
+    <nav class="navbar navbar-expand-lg navbar-light bg-success-light">
         <div class="container">
             <a class="navbar-brand" href="{{route('index')}}">Inicio</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
@@ -59,8 +59,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav navbar-custom">
-                   
-<!--  menú desplegable -->
                     <li class="nav-item dropdown"> 
                         <a class="nav-link dropdown-toggle" href="#" id="categoriasDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Categorías
@@ -68,28 +66,27 @@
                         <div class="dropdown-menu" aria-labelledby="categoriasDropdown">
                             <a class="dropdown-item" href="{{route('inorganico')}}">Inorgánicos</a>
                             <a class="dropdown-item" href="{{route('organico')}}">Orgánicos</a>
-                         
                         </div>
                     </li>
-                    <li class="nav-item dropdown"> 
-                        <a class="nav-link dropdown-toggle" href="#" id="categoriasDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Compras
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('contact') }}">Contáctenos</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="pqrsDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            PQRS
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="categoriasDropdown">
-                            <a class="dropdown-item" href="#">carrito de Compras</a>
-                         
+                        <div class="dropdown-menu" aria-labelledby="pqrsDropdown">
+                            <a class="dropdown-item" href="{{route('pqrs.create')}}">Crear PQRS</a>
+                            <div class="dropdown-divider"></div> <!-- Separador -->
+                            <a class="dropdown-item" href="{{route('ayuda')}}">Servicio de Ayuda</a>
                         </div>
                     </li>
-
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('contact') }}">Contactenos</a>
+                        <a class="nav-link" href="{{route('nosotros')}}">Nosotros</a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{route('pqrs.create')}}">PQRS</a>
-                    </li>
-
-                    <li class="nav-item dropdown"> 
+    <li class="nav-item dropdown"> 
                         <a class="nav-link dropdown-toggle" href="#" id="categoriasDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Administrar 
                         </a>
@@ -103,30 +100,45 @@
                             <a class="dropdown-item" href="{{ route('rols.index') }}">rols</a>
                             <a class="dropdown-item" href="{{ route('pqrs.index') }}">PQRS</a>
                             <a class="dropdown-item" href="{{ route('abastecimientos.index') }}">abastecimientos</a>
-                          <!-- Icono de perfil -->
-         @if (Auth::check())
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle profile-icon" href="#" id="profileDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="{{ asset('img/iconoperfil.png') }}" alt="Icono de perfil" style="width: 32px; height: auto;">
-                {{ Auth::user()->nombres }}
-            </a>
-                   
-            <div class="dropdown-menu" aria-labelledby="profileDropdown">
-                <a class="dropdown-item" href="">Actualizar Perfil</a>
-                <a class="dropdown-item" href="{{route('productos.create')}}">Vender Producto</a>
-                <a class="dropdown-item" href="{{ route('logout') }}"
-                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                 Cerrar Sesión
-             </a>
-             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                 @csrf
-             </form>
-                </ul>
 
-                @endif
-            </div>
+                </ul>
+            </div> 
+            @if (Auth::check())
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle profile-icon" href="#" id="profileDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    style="color: black; /* o el color que desees */">
+                    <img src="{{ asset('img/iconoperfil.png') }}" alt="Icono de perfil" style="width: 32px; height: auto;">
+                    {{ Auth::user()->nombres }}
+                </a>
+                
+                    <div class="dropdown-menu" aria-labelledby="profileDropdown">
+                        <a class="dropdown-item" href="{{ route('users.edit', ['user' => Auth::user()]) }}">Actualizar Perfil</a>
+                        <a class="dropdown-item" href="{{route('productos.create')}}">Vender Producto</a>
+                        <a class="dropdown-item" href="{{ route('logout') }}"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Cerrar Sesión
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-shopping-cart" style="color: black; font-size: 20px;"></i> <!-- Icono de carrito de compras -->
+                    </a>
+                </li>
+            @endif
         </div>
+    </div>
     </nav>
+    
+    
 
 
    <!-- Carrusel -->

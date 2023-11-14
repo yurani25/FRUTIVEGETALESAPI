@@ -6,6 +6,8 @@
     <title>Editar Producto</title>
     <link rel="stylesheet" href="{{ asset('css/formularios1.css') }}">
 </head>
+
+
 <body>
     <div class="users-form" >
    
