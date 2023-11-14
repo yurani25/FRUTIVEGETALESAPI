@@ -145,10 +145,10 @@ $users->save();
         return redirect()->route('users.index')->with('success', 'Usuario eliminado exitosamente');
     }
 
-    public function dataUser()
+public function dataUser()
 {
 
-$user= user::all();
+$user= User::all();
 return response()->json($user);
 
 }
