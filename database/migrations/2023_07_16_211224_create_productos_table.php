@@ -18,7 +18,7 @@ class CreateProductosTable extends Migration
            $table->unsignedBigInteger('user_id');
             $table->string('nombres');
             $table->string('tiempo_reclamo');
-            $table->string('imagen');
+            $table->string('imagen')->nullable();
             $table->integer('precio');
             $table->text('descripcion');
             $table->timestamps();

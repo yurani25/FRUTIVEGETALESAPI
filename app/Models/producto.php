@@ -13,7 +13,10 @@ class producto extends Model
         'user_id',
         'nombres' ,
         'tiempo_reclamo',
-        'imagen'
+        /*'imagen',*/
+       'precio',
+       'descripcion'
+
     ];
     use HasFactory;
 

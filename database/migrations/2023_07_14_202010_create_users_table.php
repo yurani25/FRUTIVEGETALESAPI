@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('telefono', 15);
             $table->string('email');
             $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
            // $table->foreign('abastecimiento_id')->references('id')->on('abastecimientos')->onDelete('cascade');
            // $table->foreign('rol_id')->references('id')->on('rols')->onDelete('cascade');

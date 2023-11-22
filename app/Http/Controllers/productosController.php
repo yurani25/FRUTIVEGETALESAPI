@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\producto;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Http\Response;
+
 
 class productosController extends Controller
 {
@@ -13,15 +15,15 @@ class productosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+   
+public function index()
     {
-        $productos= producto::all();
-
-     return view('productos.index',compact('productos'));
-    
+        $product = producto::with('user')->get();
+        return response()->json($product,Response::HTTP_OK);
+ 
     }
 
-    public function catalogo()
+  /*   public function catalogo()
     {
         $productos = producto::all();
        
@@ -34,7 +36,16 @@ class productosController extends Controller
      return view('index',compact('productos'));
      
     
+    } */
+    public function catalogo(Request $request)
+    {
+        $productos = Producto::all();
+    
+        // Puedes agregar lógica adicional aquí para procesar los datos según tus necesidades
+    
+        return response()->json(['index' => $productos], 200);
     }
+
     
     public function inorganico()
     {
@@ -76,27 +87,27 @@ class productosController extends Controller
      */
     public function store(Request $request)
     {
-        $productos= new producto();
-        $productos->nombres=$request->nombres;
-        $productos->tiempo_reclamo=$request->tiempo_reclamo;
-        $productos->imagen=$request->imagen;
-        $productos->precio=$request->precio;
-        $productos->descripcion=$request->descripcion;
-        $productos->user_id=$request->user_id;
+        $request->validate([
+            'nombres' => 'required|max:255',
+            'tiempo_reclamo' => 'required|max:255',
+            /* 'image' => 'required|max:255', */
+            'precio' => 'required|integer',
+            'descripcion' => 'required|max:255',
+            'user_id' => 'required|integer' 
+        
+        ]);
+
 
           // Subir y almacenar la imagen
-        if ($request->hasFile('imagen')) {
+       /* if ($request->hasFile('imagen')) {
             $imageName = time() . '.' . $request->file('imagen')->getClientOriginalExtension();
             $imagenPath = $request->file('imagen')->storeAs('productos', $imageName, 'public');
             $productos->imagen = $imageName;
            //$product->image = $imagenPath;
 
-        }
-
-
-        $productos->save();
-
-         return Redirect()->route('productos.index',$productos); 
+        }*/
+        $productos = producto::create($request->all());
+        return response()->json($productos, Response::HTTP_CREATED);
 
         
     }
@@ -127,11 +138,17 @@ class productosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(producto $producto)
-    {
-        $users = User::all(); 
-        return view('productos.edit', compact('producto', 'users'));
-    }
+    public function edit($id){
+
+        $producto = producto::with('user')->find($id);
+        if (!$producto) {
+            return response()->json(['error' => 'Usuario no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+
+      return response()->json($producto,Response::HTTP_OK);
+
+       
+     }
 
     /**
      * Update the specified resource in storage.
@@ -140,27 +157,35 @@ class productosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, producto $producto)
-    {
-         // Actualizar los campos
-        $producto->nombres = $request->nombres;
-        $producto->tiempo_reclamo = $request->tiempo_reclamo;
-        $producto->precio = $request->precio;
-        $producto->descripcion = $request->descripcion;
-        $producto->user_id = $request->user_id;
-    
-        // Verificar si se proporcionó una nueva imagen
-        if ($request->hasFile('nueva_imagen')) {
+ 
+        public function update(Request $request, producto $producto)
+        {
+        
+         /*    $id = (int)$request->id; */
+        
+            $request->validate([
+                'nombres' => 'required|max:255',
+                'tiempo_reclamo' => 'required|max:255',
+                /* 'image' => 'required|max:255', */
+                'precio' => 'required|integer',
+                'descripcion' => 'required|max:255',
+                'user_id' => 'required|integer' 
+            
+            ]);
+
+
+   // Verificar si se proporcionó una nueva imagen
+      /*  if ($request->hasFile('nueva_imagen')) {
             $imageName = time() . '.' . $request->file('nueva_imagen')->getClientOriginalExtension();
             $imagenPath = $request->file('nueva_imagen')->storeAs('productos', $imageName, 'public');
             $producto->imagen = $imageName; 
+        }*/
+    
+        $producto->update($request->all());
+
+    return response()->json($producto, Response::HTTP_OK);
+
         }
-    
-        $producto->save();
-    
-        return redirect()->route('productos.index')->with('success', 'Registro actualizado correctamente');
-    }
-    
 
     /**
      * Remove the specified resource from storage.
@@ -168,13 +193,29 @@ class productosController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(producto $producto)
     {
-        $producto = producto::find($id)->delete();
-
-        return redirect()->route('productos.index')->with('success', 'Usuario eliminado exitosamente');
+        
+      /*   if ($product->image) {
+            Storage::delete('public/product/' . $product->image);
+        } */
+    
+        $producto->delete();
+        
+      return response()->json(null,Response::HTTP_NO_CONTENT);
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 

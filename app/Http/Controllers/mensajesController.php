@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\mensaje;
+use Illuminate\Http\Response;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
@@ -16,9 +17,10 @@ class mensajesController extends Controller
      */
     public function index()
     {
-        $mensaje=mensaje::all();
-        return view('mensajes.index' , compact('mensaje'));
+        $mensajes = mensaje::with('user')->get();
+        return response()->json($mensajes,Response::HTTP_OK);
     }
+ 
 
     /**
      * Show the form for creating a new resource.

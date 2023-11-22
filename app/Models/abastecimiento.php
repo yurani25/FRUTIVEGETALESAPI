@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class abastecimiento extends Model
 {
+    protected $fillable = [
+        'nombre',
+        'ubicacion ' ,
+        'horario_atencion'
+
+    ];
+
     use HasFactory;
     public function users()
     {

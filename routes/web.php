@@ -28,7 +28,7 @@ Route::get('/', function () {
 });
 
 
-
+/* 
 // Rutas de autenticación
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
@@ -41,12 +41,13 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
  Route::get('users', [usersController::class, 'index'])->name('users.index');
  
  //editar 
- Route::get('users/{user}/edit', [usersController::class, 'edit'])->name('users.edit');
+ Route::put('/users/update/{user}', [usersController::class, 'update'])->name('users.update');
  Route::put('users/{user}', [usersController::class, 'update'])->name('users.update');
 //eliminar
 Route::delete('users/{users}',[usersController::class, 'destroy'])->name('users.destroy');
 
 ///////
+
 
  //productos
 Route::get('productos/create', [productosController::class, 'create'])->name('productos.create');
@@ -163,9 +164,9 @@ Route::delete('cars/{car}',[carrito_comprasController::class, 'destroy'])->name(
 /*Route::middleware(['auth'])->group(function () {
 Route::get('index',[ productosController::class ,'catalogo'])->name('index');
 });*/
-Route::get('index',[ productosController::class ,'catalogo'])->name('index');
+/* Route::get('index',[ productosController::class ,'catalogo'])->name('index');
 
-Route::get('inorganico',[ productosController::class ,'inorganico'])->name('inorganico');
+Route::get('inorganico',[ productosController::class ,'inorganico'])->name('inorganico'); */ 
 
 
 /* Route::get('index', function () {

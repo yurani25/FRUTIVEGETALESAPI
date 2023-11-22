@@ -5,13 +5,15 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 
 
-
-class user extends Authenticatable
+class User extends Authenticatable
 
 {
 
+    use HasApiTokens, Notifiable;
     protected $fillable = [
         'nombres' ,
         'apellidos',
@@ -20,11 +22,14 @@ class user extends Authenticatable
         'email',
         'password',
         'profile_picture',
-        'rol_id', 
-        'abastecimiento_id'
+       /* 'rol_id', 
+        'abastecimiento_id'*/
         
     ];
-    
+    protected $hidden =[
+        'password',
+        'remember_token',
+    ];
 
     use HasFactory;
     
@@ -51,15 +56,15 @@ class user extends Authenticatable
         return $this->hasMany('App\Models\compra');
     }
 
-    public function abastecimiento()
+  /*   public function abastecimiento()
     {
         return $this->belongsTo('App\Models\abastecimiento');
-    }
+    } */
 
-    public function rol()
+  /*  public function rol()
     {
         return $this->belongsTo('App\Models\rol');
-    }
+    }*/
     public function pagos()
     {
         return $this->hasMany('App\Models\pago');
