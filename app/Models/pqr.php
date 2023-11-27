@@ -8,6 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class pqr extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'tipo' ,
+        'motivo',
+    ];
+
+
+
     public function user()
     {
         return $this->belongsTo('App\Models\User');

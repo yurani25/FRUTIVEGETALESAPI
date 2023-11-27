@@ -39,14 +39,22 @@ class mensajesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        $mensajes = new mensaje();
-        $mensajes->nombre_chat = $request->nombre_chat;
-        $mensajes->user_id=$request->user_id;
-        $mensajes->save();
-        return Redirect()->route('mensajes.index',$mensajes);
-    }
+
+
+     public function store(Request $request)
+     {
+         $request->validate([
+             'nombre_chat' => 'required|max:255',
+             'user_id' => 'required|integer' 
+         
+         ]);
+ 
+         $mensajes = mensaje::create($request->all());
+         return response()->json($mensajes, Response::HTTP_CREATED);
+ 
+         
+     }
+
 
     /**
      * Display the specified resource.

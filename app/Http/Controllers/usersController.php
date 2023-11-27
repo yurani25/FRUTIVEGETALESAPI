@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\abastecimiento;
+use App\Models\producto;
 use App\Models\rol;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -98,6 +101,7 @@ class usersController extends Controller
             'telefono' => $request->telefono,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'profile_picture' => 'img/default_profile_picture.png', // Ruta de la imagen por defecto
         ]); 
 
        
@@ -126,17 +130,17 @@ class usersController extends Controller
             'accessToken' => $token,
             'token_type' => 'Bearer',
             'user' => $user,
+            'isLoggedIn' => true, // Agregamos un indicador de inicio de sesión
         ]);
     }
 
     public function logout(){
 
         auth()->user()->tokens()->delete();
-
-        return[
-            'message' => 'You have successfully logged out and the token was succesfully deleted'
+        return [
+            'message' => 'Logout successful',
+            'isLoggedIn' => false, // Agregamos un indicador de cierre de sesión
         ];
-
     }
     
 
@@ -158,10 +162,23 @@ class usersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit($id)
     {
-        return response()->json(['user' => $user], 200);
+        try {
+            // Encuentra el usuario por su ID
+            $user = User::findOrFail($id);
+    
+            // Puedes ajustar la respuesta según tus necesidades
+            return response()->json(['user' => $user], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            // Manejo de error cuando el usuario no existe
+            return response()->json(['error' => 'Usuario no encontrado'], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            // Manejo de otros errores
+            return response()->json(['error' => 'Error al obtener el usuario', 'message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
+    
 
     /**
      * Update the specified resource in storage.
@@ -170,42 +187,43 @@ class usersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-  public function update(Request $request, User $user)
-{
-    try {
-        $user->nombres = $request->nombres;
-        $user->apellidos = $request->apellidos;
-        $user->edad = $request->edad;
-        $user->telefono = $request->telefono;
-        $user->email = $request->email;
-        $user->password = $request->password;
-
-        // Actualizar la foto de perfil si se proporciona una nueva
-        if ($request->hasFile('profile_picture')) {
-            // Eliminar la foto de perfil anterior si no es la predeterminada
-            if ($user->profile_picture && $user->profile_picture !== 'img/default_profile_picture.png') {
-                Storage::disk('public')->delete($user->profile_picture);
+    public function update(Request $request, producto $producto)
+    {
+        // Validación de campos
+        $request->validate([
+            'nombres' => 'required|max:255',
+            'tiempo_reclamo' => 'required|max:255',
+            'precio' => 'required|integer',
+            'descripcion' => 'required|max:255',
+            'user_id' => 'required|integer',
+            'nueva_imagen' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta según tus necesidades
+        ]);
+    
+        // Actualiza los campos
+        $producto->nombres = $request->nombres;
+        $producto->tiempo_reclamo = $request->tiempo_reclamo;
+        $producto->precio = $request->precio;
+        $producto->descripcion = $request->descripcion;
+        $producto->user_id = $request->user_id;
+    
+        // Verifica si se proporcionó una nueva imagen
+        if ($request->hasFile('nueva_imagen')) {
+            // Elimina la imagen antigua si existe
+            if (Storage::exists('public/productos/' . $producto->imagen)) {
+                Storage::delete('public/productos/' . $producto->imagen);
             }
-            // Guardar la nueva foto de perfil
-            $path = $request->file('profile_picture')->store('profile_pictures', 'public');
-            $user->profile_picture = $path;
-        } elseif ($request->has('remove_profile_picture') && $request->remove_profile_picture == 1) {
-            // Si se proporciona un campo remove_profile_picture y es igual a 1, elimina la foto de perfil
-            if ($user->profile_picture && $user->profile_picture !== 'img/default_profile_picture.png') {
-                Storage::disk('public')->delete($user->profile_picture);
-                $user->profile_picture = null;
-            }
+    
+            // Almacena la nueva imagen
+            $imagenPath = $request->file('nueva_imagen')->storeAs('public/productos', time() . '_' . $request->file('nueva_imagen')->getClientOriginalName());
+            $producto->imagen = basename($imagenPath);
         }
-
-        $user->save();
-
-        // Puedes personalizar la respuesta según tus necesidades
-        return response()->json(['message' => 'Registro actualizado correctamente', 'user' => $user], 200);
-    } catch (\Exception $e) {
-        // Manejo de errores
-        return response()->json(['error' => 'Error al actualizar el registro', 'message' => $e->getMessage()], 500);
+    
+        $producto->save();
+    
+        return response()->json($producto, Response::HTTP_OK);
     }
-}
+    
+    
      
 
     /**

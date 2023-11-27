@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\AbastecimientosController;
 use App\Http\Controllers\mensajesController;
+use App\Http\Controllers\pqrsController;
 use App\Http\Controllers\productosController;
+use App\Http\Controllers\rolsController;
 use App\Http\Controllers\usersController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -33,8 +35,9 @@ Route::get('productos',[productosController::class,'index'])->name('product.inde
  Route::get('/productos/create', [productosController::class, 'create'])->name('productos.create');
  Route::post('/productos/store', [productosController::class, 'store'])->name('productos.store');
 
- Route::get('/productos/show', [productosController::class, 'show'])->name('productos.show');
+ Route::get('productos/{producto}', [productosController::class, 'show'])->name('productos.show');
 
+ 
  //editar
  Route::get('/productos/edit/{id}', [productosController::class, 'edit'])->name('productos.edit');
  Route::put('/productos/update/{producto}', [productosController::class, 'update'])->name('productos.update');
@@ -60,17 +63,11 @@ Route::delete('/users/destroy/{user}',[usersController::class, 'destroy'])->name
 Route::post('register', [usersController::class,'register'])->name('register');
 Route::post('logins', [usersController::class,'logins'])->name('logins');
 
+
 Route::middleware(['auth:sanctum'])->group(function(){
     Route::get('logout', [usersController::class,'logout'])->name('logout');
    /*  route::get('catalogo',[ProductController::class,'catalogo'])->name('catalogo.index'); */
 });
-
-
-
-
-
-
-
 
 // abastecimiento
 Route::get('abastecimientos', [AbastecimientosController::class, 'index'])->name('abastecimientos.index');
@@ -89,6 +86,24 @@ Route::delete('abastecimientos/{abastecimiento}',[AbastecimientosController::cla
 //mensajes
 
 Route::get('mensajes', [mensajesController::class, 'index'])->name('mensajes.index');
+Route::get('/mensajes/create', [mensajesController::class, 'create'])->name('mensajes.create');
+Route::post('/mensajes/store', [mensajesController::class, 'store'])->name('mensajes.store');
+
+//pqrs
+Route::get('pqrs', [pqrsController::class, 'index'])->name('pqrs.index');
+
+Route::get('pqrs/create', [pqrsController::class, 'create'])->name('pqrs.create');
+Route::post('/pqrs/store', [pqrsController::class, 'store'])->name('pqrs.store');
 
 
+//editar
+Route::get('pqrs/edit/{id}', [pqrsController::class, 'edit'])->name('pqrs.edit');
+Route::put('pqrs/update/{pqr}', [pqrsController::class, 'update'])->name('pqrs.update');
 
+
+//eliminar
+Route::delete('/pqrs/destroy/{pqr}',[pqrsController::class, 'destroy'])->name('pqrs.destroy');
+
+
+//rols
+Route::get('rols', [rolsController::class, 'index'])->name('rols.index');

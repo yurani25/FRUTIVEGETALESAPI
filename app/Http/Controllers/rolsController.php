@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Http\Response;
 use App\Models\rol;
 use Illuminate\Http\Request;
 
@@ -15,9 +15,9 @@ class rolsController extends Controller
     public function index()
     {
         $rols= rol::all();
-        return view('rols.index',compact('rols'));
+        return response()->json($rols,Response::HTTP_OK);
     }
-
+  
     /**
      * Show the form for creating a new resource.
      *
