@@ -101,7 +101,7 @@ class usersController extends Controller
             'telefono' => $request->telefono,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'profile_picture' => 'perfil2.jpg', // Ruta de la imagen por defecto
+           /*  'profile_picture' => 'perfil2.jpg', */ // Ruta de la imagen por defecto
         ]); 
 
        
@@ -187,37 +187,60 @@ class usersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-  
-     public function update(Request $request, $id)
-     {
-         // Validar la solicitud
-         $request->validate([
-             'nombres' => 'string',
-             'apellidos' => 'string',
-             'edad' => 'integer',
-             'telefono' => 'string',
-             'email' => 'email|unique:users,email,' . $id,
-             'password' => 'string|min:8',
-             'profile_picture' => 'string',
-         ]);
- 
-         // Obtener el usuario que se va a actualizar
-         $user = User::findOrFail($id);
- 
-         // Actualizar los campos según lo que se proporciona en la solicitud
-         $user->update([
-             'nombres' => $request->input('nombres', $user->nombres),
-             'apellidos' => $request->input('apellidos', $user->apellidos),
-             'edad' => $request->input('edad', $user->edad),
-             'telefono' => $request->input('telefono', $user->telefono),
-             'email' => $request->input('email', $user->email),
-             'password' => $request->has('password') ? Hash::make($request->password) : $user->password,
-             'profile_picture' => $request->input('profile_picture', $user->profile_picture),
-         ]);
- 
-         // Respuesta de éxito
-         return response()->json(['message' => 'Usuario actualizado con éxito', 'data' => $user]);
-     }
+    public function update(Request $request, $id)
+    {
+        $user = auth()->user();
+    
+        // Validar la solicitud
+        $request->validate([
+            'nombres' => 'string',
+            'apellidos' => 'string',
+            'edad' => 'integer',
+            'telefono' => 'string',
+            'email' => 'email|unique:users,email,' . $id,
+            'password' => 'string|min:8',
+            'profile_picture' => 'sometimes|nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+    
+        // Obtener el usuario que se va a actualizar
+        $user = User::findOrFail($id);
+    
+        // Actualizar los campos según lo que se proporciona en la solicitud
+        $userData = [
+            'nombres' => $request->input('nombres', $user->nombres),
+            'apellidos' => $request->input('apellidos', $user->apellidos),
+            'edad' => $request->input('edad', $user->edad),
+            'telefono' => $request->input('telefono', $user->telefono),
+            'email' => $request->input('email', $user->email),
+            'password' => $request->has('password') ? Hash::make($request->password) : $user->password,
+        ];
+    
+        // Manejar la imagen
+        if ($request->hasFile('profile_picture')) {
+            // Eliminar la imagen existente
+            if ($user->profile_picture) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+    
+            // Guardar la nueva imagen
+            $imagePath = $request->file('profile_picture')->store('profile_pictures', 'public');
+            $userData['profile_picture'] = $imagePath;
+        } elseif ($request->filled('remove_profile_picture')) {
+            // Si se proporciona un campo para eliminar la imagen, establecerlo como nulo y eliminar la imagen existente
+            if ($user->profile_picture) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+            $userData['profile_picture'] = null;
+        }
+    
+        // Actualizar el usuario
+        $user->update($userData);
+    
+        // Respuesta de éxito
+        return response()->json(['message' => 'Usuario actualizado con éxito', 'data' => $user]);
+    }
+    
+
  
     
 
