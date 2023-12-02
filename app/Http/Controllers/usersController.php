@@ -187,44 +187,40 @@ class usersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, producto $producto)
-    {
-        // Validación de campos
-        $request->validate([
-            'nombres' => 'required|max:255',
-            'tiempo_reclamo' => 'required|max:255',
-            'precio' => 'required|integer',
-            'descripcion' => 'required|max:255',
-            'user_id' => 'required|integer',
-            'nueva_imagen' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta según tus necesidades
-        ]);
+  
+     public function update(Request $request, $id)
+     {
+         // Validar la solicitud
+         $request->validate([
+             'nombres' => 'string',
+             'apellidos' => 'string',
+             'edad' => 'integer',
+             'telefono' => 'string',
+             'email' => 'email|unique:users,email,' . $id,
+             'password' => 'string|min:8',
+             'profile_picture' => 'string',
+         ]);
+ 
+         // Obtener el usuario que se va a actualizar
+         $user = User::findOrFail($id);
+ 
+         // Actualizar los campos según lo que se proporciona en la solicitud
+         $user->update([
+             'nombres' => $request->input('nombres', $user->nombres),
+             'apellidos' => $request->input('apellidos', $user->apellidos),
+             'edad' => $request->input('edad', $user->edad),
+             'telefono' => $request->input('telefono', $user->telefono),
+             'email' => $request->input('email', $user->email),
+             'password' => $request->has('password') ? Hash::make($request->password) : $user->password,
+             'profile_picture' => $request->input('profile_picture', $user->profile_picture),
+         ]);
+ 
+         // Respuesta de éxito
+         return response()->json(['message' => 'Usuario actualizado con éxito', 'data' => $user]);
+     }
+ 
     
-        // Actualiza los campos
-        $producto->nombres = $request->nombres;
-        $producto->tiempo_reclamo = $request->tiempo_reclamo;
-        $producto->precio = $request->precio;
-        $producto->descripcion = $request->descripcion;
-        $producto->user_id = $request->user_id;
-    
-        // Verifica si se proporcionó una nueva imagen
-        if ($request->hasFile('nueva_imagen')) {
-            // Elimina la imagen antigua si existe
-            if (Storage::exists('public/productos/' . $producto->imagen)) {
-                Storage::delete('public/productos/' . $producto->imagen);
-            }
-    
-            // Almacena la nueva imagen
-            $imagenPath = $request->file('nueva_imagen')->storeAs('public/productos', time() . '_' . $request->file('nueva_imagen')->getClientOriginalName());
-            $producto->imagen = basename($imagenPath);
-        }
-    
-        $producto->save();
-    
-        return response()->json($producto, Response::HTTP_OK);
-    }
-    
-    
-     
+
 
     /**
      * Remove the specified resource from storage.

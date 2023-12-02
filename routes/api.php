@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/user', [usersController::class, 'index']);
     Route::get('/logout', [usersController::class,'logout']);
+    Route::post('/users_update/{id}', [usersController::class, 'update']);
    /*  route::get('catalogo',ProductController::class,'catalogo')->name('catalogo.index'); */
 });
 /* Route::get('get_datauser' , usersController::class, 'dataUser');
@@ -58,7 +59,8 @@ Route::get('/productos', [productosController::class,'index']);
  
  //editar 
  Route::get('/users/edit/{id}', [usersController::class, 'edit']);
- Route::put('/users_update/{users}', [usersController::class, 'update']);
+
+ 
 
 
 //eliminar
