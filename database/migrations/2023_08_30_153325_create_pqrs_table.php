@@ -11,6 +11,8 @@ class CreatePqrsTable extends Migration
      *
      * @return void
      */
+
+     //hola
     public function up()
     {
         Schema::create('pqrs', function (Blueprint $table) {
