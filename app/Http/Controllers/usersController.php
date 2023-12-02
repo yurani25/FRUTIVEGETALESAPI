@@ -27,7 +27,7 @@ class usersController extends Controller
     public function index()
     {
         $users = User::all();
-        return response()->json($users,Response::HTTP_OK);
+        return  response()->json($users);
 
     }
 
@@ -101,7 +101,7 @@ class usersController extends Controller
             'telefono' => $request->telefono,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'profile_picture' => 'img/default_profile_picture.png', // Ruta de la imagen por defecto
+            'profile_picture' => 'perfil2.jpg', // Ruta de la imagen por defecto
         ]); 
 
        

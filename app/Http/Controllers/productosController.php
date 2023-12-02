@@ -105,54 +105,37 @@ public function index()
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-   /*  public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'nombres' => 'required|max:255',
             'tiempo_reclamo' => 'required|max:255',
-            'image' => 'required|max:255', 
+            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
             'precio' => 'required|integer',
             'descripcion' => 'required|max:255',
             'user_id' => 'required|integer' 
-        
         ]);
+    
+        // Subir y almacenar la imagen localmente
+        $imagePath = $request->file('imagen')->store('productos', 'public');
+    
+        // Crear el producto con la URL de la imagen local
+        $producto = producto::create([
+            'nombres' => $request->nombres,
+            'tiempo_reclamo' => $request->tiempo_reclamo,
+            'imagen' => asset('storage/' . $imagePath),
+            'precio' => $request->precio,
+            'descripcion' => $request->descripcion,
+            'user_id' => $request->user_id,
+        ]);
+        //echo($producto);
+        //dd($producto);
+        return response()->json($producto, Response::HTTP_CREATED);
+    } 
 
 
 
-        $productos = producto::create($request->all());
-        return response()->json($productos, Response::HTTP_CREATED);
-
-        
-    } */
-
-
-
-    public function store(Request $request)
-{
-    $request->validate([
-        'nombres' => 'required|max:255',
-        'tiempo_reclamo' => 'required|max:255',
-        'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
-        'precio' => 'required|integer',
-        'descripcion' => 'required|max:255',
-        'user_id' => 'required|integer' 
-    ]);
-
-    // Subir y almacenar la imagen localmente
-    $imagePath = $request->file('imagen')->store('productos', 'public');
-
-    // Crear el producto con la URL de la imagen local
-    $producto = producto::create([
-        'nombres' => $request->nombres,
-        'tiempo_reclamo' => $request->tiempo_reclamo,
-        'imagen' => asset('storage/' . $imagePath),
-        'precio' => $request->precio,
-        'descripcion' => $request->descripcion,
-        'user_id' => $request->user_id,
-    ]);
-
-    return response()->json($producto, Response::HTTP_CREATED);
-}
+   
     /**
      * Display the specified resource.
      *
@@ -197,9 +180,83 @@ public function index()
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
- 
-     public function update(Request $request, producto $producto)
+    public function update(Request $request, $id)
+    {
+        $producto = Producto::findOrFail($id);
+    
+        $request->validate([
+            'nombres' => 'required|max:255',
+            'tiempo_reclamo' => 'required|max:255',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'precio' => 'required|integer',
+            'descripcion' => 'required|max:255',
+            'user_id' => 'required|integer' 
+        ]);
+    
+        // Verificar si se ha cargado una nueva imagen
+        if ($request->hasFile('imagen')) {
+            // Eliminar la imagen anterior si existe
+            if ($producto->imagen) {
+                Storage::disk('public')->delete(str_replace(asset('storage/'), '', $producto->imagen));
+            }
+    
+            // Guardar la nueva imagen
+            $imagePath = $request->file('imagen')->store('productos', 'public');
+            $producto->imagen = asset('storage/' . $imagePath);
+        }
+    
+        // Llenar el modelo con los demás datos
+        $producto->fill($request->except('imagen'));
+        $producto->save();
+    
+        return response()->json($producto, Response::HTTP_OK);
+    }
+    
+    
+    
+    /* public function update(Request $request, $id)
      {
+
+        $request->validate([
+            'nombres' => 'required|max:255',
+            'tiempo_reclamo' => 'required|max:255',
+            'precio' => 'required|integer',
+            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'descripcion' => 'required|max:255',
+            'user_id' => 'required|integer'
+        ]);
+    
+        // Obtener el producto por ID
+        $producto = Producto::find($id);
+    
+        if (!$producto) {
+            return response()->json(['message' => 'Producto no encontrado'], Response::HTTP_NOT_FOUND);
+        }
+       // Verificar si se proporcionó una nueva imagen
+       if ($request->hasFile('imagen')) {
+        // Eliminar la imagen anterior si existe
+        Storage::disk('public')->delete($producto->imagen);
+
+        // Subir y almacenar la nueva imagen localmente
+        $imagePath = $request->file('imagen')->store('productos', 'public');
+
+        // Actualizar la URL de la imagen en la base de datos
+        $producto->update(['imagen' => asset('storage/' . $imagePath)]);
+    }
+        // Actualizar los campos del producto
+        $producto->update([
+            'nombres' => $request->nombres,
+            'tiempo_reclamo' => $request->tiempo_reclamo,
+            'precio' => $request->precio,
+            'imagen' => asset('storage/' . $imagePath),
+            'descripcion' => $request->descripcion,
+            'user_id' => $request->user_id,
+        ]);
+    
+     
+    
+        return response()->json($producto, Response::HTTP_OK);
+        /*
          // Validación de campos
          $request->validate([
              'nombres' => 'required|max:255',
@@ -232,7 +289,7 @@ public function index()
          $producto->save();
      
          return response()->json($producto, Response::HTTP_OK);
-     }
+     }*/
      
 
     /**
@@ -241,16 +298,19 @@ public function index()
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(producto $producto)
+    public function destroy(int $producto)
     {
         
       /*   if ($product->image) {
             Storage::delete('public/product/' . $product->image);
         } */
     
-        $producto->delete();
+        //$producto->delete();
+
+        $product = producto::findOrFail($producto);
+        $product->delete();
         
-      return response()->json(null,Response::HTTP_NO_CONTENT);
+      return response()->json([], 204);
     }
 
 }

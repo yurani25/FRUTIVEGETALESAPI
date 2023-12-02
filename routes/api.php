@@ -20,90 +20,94 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+/* Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+}); */
+Route::middleware('auth:sanctum')->group(function(){
+    Route::get('/user', [usersController::class, 'index']);
+    Route::get('/logout', [usersController::class,'logout']);
+   /*  route::get('catalogo',ProductController::class,'catalogo')->name('catalogo.index'); */
 });
-Route::get('get_datauser' , [usersController::class, 'dataUser']);
+/* Route::get('get_datauser' , usersController::class, 'dataUser');
 
-Route::get('/create', [usersController::class, 'create']);
+Route::get('/create', usersController::class, 'create');
 
-Route::get('get_dataproduc' , [productosController::class, 'dataproduc']);
+Route::get('get_dataproduc' , productosController::class, 'dataproduc'); */
 
 
  //productos
-Route::get('productos',[productosController::class,'index'])->name('product.index');
- Route::get('/productos/create', [productosController::class, 'create'])->name('productos.create');
- Route::post('/productos/store', [productosController::class, 'store'])->name('productos.store');
+Route::get('/productos', [productosController::class,'index']);
+ Route::get('/productos_create', [productosController::class, 'create']);
 
- Route::get('productos/{producto}', [productosController::class, 'show'])->name('productos.show');
+ Route::post('/productos_store', [productosController::class, 'store']);
 
+ Route::get('productos/{producto}', [productosController::class, 'show']);
  
  //editar
- Route::get('/productos/edit/{id}', [productosController::class, 'edit'])->name('productos.edit');
- Route::put('/productos/update/{producto}', [productosController::class, 'update'])->name('productos.update');
+ Route::get('/productos_edit/{id}', [productosController::class, 'edit']);
+ Route::post('/productos_update/{producto}', [productosController::class, 'update']);
  //eliminar
- Route::delete('/productos/destroy/{producto}',[productosController::class, 'destroy'])->name('productos.destroy');
+ Route::delete('/productos_destroy/{producto}', [productosController::class, 'destroy'])->name('productos.destroy');
 
 
  //users
- Route::get('/users', [usersController::class, 'index'])->name('users.index');
- Route::get('/users/create', [usersController::class, 'create'])->name('users.create');
- Route::post('/users/store', [usersController::class, 'store'])->name('users.store'); // Cambiado a '/users'
- 
+ Route::get('/users', [usersController::class, 'index']);
+ Route::get('/users/create', [usersController::class, 'create']);
+ Route::post('/users/store', [usersController::class, 'store']);
 
  
  //editar 
- Route::get('/users/edit/{id}', [usersController::class, 'edit'])->name('users.edit');
- Route::put('/users/update/{users}', [usersController::class, 'update'])->name('users.update');
+ Route::get('/users/edit/{id}', [usersController::class, 'edit']);
+ Route::put('/users_update/{users}', [usersController::class, 'update']);
 
 
 //eliminar
-Route::delete('/users/destroy/{user}',[usersController::class, 'destroy'])->name('users.destroy');
+Route::delete('/users/destroy/{user}', [usersController::class, 'destroy']);
 
-Route::post('register', [usersController::class,'register'])->name('register');
-Route::post('logins', [usersController::class,'logins'])->name('logins');
+Route::post('/register', [usersController::class,'register']);
+Route::post('/logins', [usersController::class,'logins']);
 
 
-Route::middleware(['auth:sanctum'])->group(function(){
-    Route::get('logout', [usersController::class,'logout'])->name('logout');
-   /*  route::get('catalogo',[ProductController::class,'catalogo'])->name('catalogo.index'); */
-});
+/* Route::middleware('auth:sanctum')->group(function(){
+    Route::get('logout', usersController::class,'logout')->name('logout');
+   // route::get('catalogo',ProductController::class,'catalogo')->name('catalogo.index'); 
+}); */
 
 // abastecimiento
-Route::get('abastecimientos', [AbastecimientosController::class, 'index'])->name('abastecimientos.index');
+Route::get('/abastecimientos', [AbastecimientosController::class, 'index']);
 
-Route::get('abastecimientos/create', [AbastecimientosController::class, 'create'])->name('abastecimientos.create');
-Route::post('abastecimientos', [AbastecimientosController::class, 'store'])->name('abastecimientos.store');
+Route::get('/abastecimientos/create',[AbastecimientosController::class, 'create']);
+Route::post('/abastecimientos', [AbastecimientosController::class, 'store']);
 
 
 //editar
-Route::get('abastecimientos/{abastecimiento}/edit', [AbastecimientosController::class, 'edit'])->name('abastecimientos.edit');
-Route::put('abastecimientos/{abastecimiento}', [AbastecimientosController::class, 'update'])->name('abastecimientos.update');
+Route::get('/abastecimientos/{abastecimiento}/edit', [AbastecimientosController::class, 'edit']);
+Route::put('/abastecimientos/{abastecimiento}', [AbastecimientosController::class, 'update']);
 //eliminar
-Route::delete('abastecimientos/{abastecimiento}',[AbastecimientosController::class, 'destroy'])->name('abastecimientos.destroy');
+Route::delete('/abastecimientos/{abastecimiento}', [AbastecimientosController::class, 'destroy']);
 
 
 //mensajes
 
-Route::get('mensajes', [mensajesController::class, 'index'])->name('mensajes.index');
-Route::get('/mensajes/create', [mensajesController::class, 'create'])->name('mensajes.create');
-Route::post('/mensajes/store', [mensajesController::class, 'store'])->name('mensajes.store');
+Route::get('mensajes', [mensajesController::class, 'index']);
+Route::get('/mensajes/create', [mensajesController::class, 'create']);
+Route::post('/mensajes/store', [mensajesController::class, 'store']);
 
 //pqrs
-Route::get('pqrs', [pqrsController::class, 'index'])->name('pqrs.index');
+Route::get('pqrs', [pqrsController::class, 'index']);
 
-Route::get('pqrs/create', [pqrsController::class, 'create'])->name('pqrs.create');
-Route::post('/pqrs/store', [pqrsController::class, 'store'])->name('pqrs.store');
+Route::get('/pqrs/create', [pqrsController::class, 'create']);
+Route::post('/pqrs/store', [pqrsController::class, 'store']);
 
 
 //editar
-Route::get('pqrs/edit/{id}', [pqrsController::class, 'edit'])->name('pqrs.edit');
-Route::put('pqrs/update/{pqr}', [pqrsController::class, 'update'])->name('pqrs.update');
+Route::get('/pqrs/edit/{id}', [pqrsController::class, 'edit']);
+Route::put('/pqrs/update/{pqr}', [pqrsController::class, 'update']);
 
 
 //eliminar
-Route::delete('/pqrs/destroy/{pqr}',[pqrsController::class, 'destroy'])->name('pqrs.destroy');
+Route::delete('/pqrs/destroy/{pqr}', [pqrsController::class, 'destroy']);
 
 
 //rols
-Route::get('rols', [rolsController::class, 'index'])->name('rols.index');
+Route::get('/rols', [rolsController::class, 'index']);
