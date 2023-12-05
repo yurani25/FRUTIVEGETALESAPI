@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
     return $request->user();
 }); */
 Route::middleware('auth:sanctum')->group(function(){
-    Route::get('/user', [usersController::class, 'index']);
+    Route::get('/user', [usersController::class, 'getProfile']);
     Route::get('/logout', [usersController::class,'logout']);
     Route::post('/users_update/{id}', [usersController::class, 'updateProfile']);
    /*  route::get('catalogo',ProductController::class,'catalogo')->name('catalogo.index'); */
@@ -37,9 +37,8 @@ Route::get('get_dataproduc' , productosController::class, 'dataproduc'); */
 
 
  //productos
-Route::get('/productos', [productosController::class,'index']);
  Route::get('/productos_create', [productosController::class, 'create']);
-
+Route::get('/productos', [productosController::class,'index']);
  Route::post('/productos_store', [productosController::class, 'store']);
 
  Route::get('productos/{producto}', [productosController::class, 'show']);

@@ -31,6 +31,14 @@ class usersController extends Controller
 
     }
 
+ /*    public function getProfile(Request $request){
+    $user = $request->user();
+return response()->json([
+
+
+]);
+    } */
+
     /**
      * Show the form for creating a new resource.
      *

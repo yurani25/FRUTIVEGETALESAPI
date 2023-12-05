@@ -91,13 +91,7 @@ public function index()
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        $users = User::all();
-  return view('productos.create' , compact('users'));
-
-     
-    }
+  
 
     /**
      * Store a newly created resource in storage.
@@ -110,28 +104,33 @@ public function index()
         $request->validate([
             'nombres' => 'required|max:255',
             'tiempo_reclamo' => 'required|max:255',
-            'imagen' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las extensiones y el tamaño según tus necesidades
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Ajusta las extensiones, el tamaño máximo y otras reglas según tus necesidades
             'precio' => 'required|integer',
             'descripcion' => 'required|max:255',
             'user_id' => 'required|integer' 
         ]);
     
-        // Subir y almacenar la imagen localmente
-        $imagePath = $request->file('imagen')->store('productos', 'public');
-    
-        // Crear el producto con la URL de la imagen local
-        $producto = producto::create([
+        $productoData = [
             'nombres' => $request->nombres,
             'tiempo_reclamo' => $request->tiempo_reclamo,
-            'imagen' => asset('storage/' . $imagePath),
             'precio' => $request->precio,
             'descripcion' => $request->descripcion,
             'user_id' => $request->user_id,
-        ]);
-        //echo($producto);
-        //dd($producto);
+        ];
+    
+        // Verificar si se proporcionó una imagen
+        if ($request->hasFile('imagen')) {
+            // Subir y almacenar la imagen localmente
+            $imagePath = $request->file('imagen')->store('productos', 'public');
+            $productoData['imagen'] = asset('storage/' . $imagePath);
+        }
+    
+        // Crear el producto con o sin URL de imagen
+        $producto = producto::create($productoData);
+    
         return response()->json($producto, Response::HTTP_CREATED);
-    } 
+    }
+    
 
 
 
